@@ -9,45 +9,59 @@
 
     <h1>Consulta e Histórico de Serviços</h1>
 
-    <form>
-        <label>Cliente:</label>
-        <input type="text">
+    <button type="button" onclick="consultarServicos()">Consultar serviços</button>
+    <button type="button" onclick="history.back()">Voltar</button>
 
-        <br><br>
+    <br><br>
 
-        <label>Equipamento:</label>
-        <input type="text">
+    <div id="resultado"></div>
 
-        <br><br>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase.js"></script>
 
-        <label>Problema:</label>
-        <input type="text">
+    <script>
+        async function consultarServicos() {
 
-        <br><br>
+            const { data, error } = await supabaseClient
+                .from("servicos")
+                .select("*");
 
-        <label>Serviço realizado:</label>
-        <input type="text">
+            if (error) {
+                document.getElementById("resultado").innerHTML =
+                    "Erro ao consultar serviços: " + error.message;
+                return;
+            }
 
-        <br><br>
+            if (data.length === 0) {
+                document.getElementById("resultado").innerHTML =
+                    "Nenhum serviço cadastrado.";
+                return;
+            }
 
-        <label>Data:</label>
-        <input type="date">
+            let tabela = "<table border='1' cellpadding='8'>";
+            tabela += "<tr>";
+            tabela += "<th>ID</th>";
+            tabela += "<th>Descrição</th>";
+            tabela += "<th>Data</th>";
+            tabela += "<th>Status</th>";
+            tabela += "<th>Valor</th>";
+            tabela += "</tr>";
 
-        <br><br>
+            data.forEach(servico => {
+                tabela += "<tr>";
+                tabela += "<td>" + servico.id_servico + "</td>";
+                tabela += "<td>" + servico.descricao_servico + "</td>";
+                tabela += "<td>" + servico.data_entrada + "</td>";
+                tabela += "<td>" + servico.status + "</td>";
+                tabela += "<td>R$ " + servico.valor + "</td>";
+                tabela += "</tr>";
+            });
 
-        <label>Status:</label>
-        <input type="text">
+            tabela += "</table>";
 
-        <br><br>
-
-        <label>Valor:</label>
-        <input type="number">
-
-        <br><br>
-
-        <button type="submit">Consultar</button>
-        <button type="button">Voltar</button>
-    </form>
+            document.getElementById("resultado").innerHTML = tabela;
+        }
+    </script>
 
 </body>
 </html>
