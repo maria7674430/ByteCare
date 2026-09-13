@@ -9,40 +9,79 @@
 
     <h1>Registro de Serviço</h1>
 
-    <form>
+    <form id="servicoForm">
+
         <label>Equipamento:</label>
-        <input type="text">
+        <input type="text" id="equipamento" required>
 
         <br><br>
 
         <label>Problema:</label>
-        <input type="text">
+        <input type="text" id="problema">
 
         <br><br>
 
         <label>Descrição do serviço:</label>
-        <input type="text">
+        <input type="text" id="descricao_servico">
 
         <br><br>
 
         <label>Data de entrada:</label>
-        <input type="date">
+        <input type="date" id="data_entrada">
 
         <br><br>
 
         <label>Status:</label>
-        <input type="text">
+        <input type="text" id="status">
 
         <br><br>
 
         <label>Valor:</label>
-        <input type="number">
+        <input type="number" id="valor" step="0.01">
 
         <br><br>
 
         <button type="submit">Salvar</button>
-        <button type="button">Voltar</button>
+        <button type="button" onclick="history.back()">Voltar</button>
+
     </form>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase.js"></script>
+
+    <script>
+        const form = document.getElementById("servicoForm");
+
+        form.addEventListener("submit", async function(event) {
+            event.preventDefault();
+
+            const equipamento = document.getElementById("equipamento").value;
+            const problema = document.getElementById("problema").value;
+            const descricao_servico = document.getElementById("descricao_servico").value;
+            const data_entrada = document.getElementById("data_entrada").value;
+            const status = document.getElementById("status").value;
+            const valor = document.getElementById("valor").value;
+
+            const { error } = await supabaseClient
+                .from("servicos")
+                .insert([
+                    {
+                        descricao_servico: descricao_servico,
+                        data_entrada: data_entrada,
+                        status: status,
+                        valor: valor
+                    }
+                ]);
+
+            if (error) {
+                alert("Erro ao cadastrar serviço: " + error.message);
+                return;
+            }
+
+            alert("Serviço cadastrado com sucesso!");
+            form.reset();
+        });
+    </script>
 
 </body>
 </html>
