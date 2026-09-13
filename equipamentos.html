@@ -9,30 +9,67 @@
 
     <h1>Cadastro de Equipamento</h1>
 
-    <form>
+    <form id="equipamentoForm">
+
         <label>Tipo:</label>
-        <input type="text">
+        <input type="text" id="tipo" required>
 
         <br><br>
 
         <label>Marca:</label>
-        <input type="text">
+        <input type="text" id="marca">
 
         <br><br>
 
         <label>Modelo:</label>
-        <input type="text">
+        <input type="text" id="modelo">
 
         <br><br>
 
         <label>Número de série:</label>
-        <input type="text">
+        <input type="text" id="numero_serie">
 
         <br><br>
 
         <button type="submit">Cadastrar</button>
-        <button type="button">Voltar</button>
+        <button type="button" onclick="history.back()">Voltar</button>
+
     </form>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase.js"></script>
+
+    <script>
+        const form = document.getElementById("equipamentoForm");
+
+        form.addEventListener("submit", async function(event) {
+            event.preventDefault();
+
+            const tipo = document.getElementById("tipo").value;
+            const marca = document.getElementById("marca").value;
+            const modelo = document.getElementById("modelo").value;
+            const numero_serie = document.getElementById("numero_serie").value;
+
+            const { error } = await supabaseClient
+                .from("equipamentos")
+                .insert([
+                    {
+                        tipo: tipo,
+                        marca: marca,
+                        modelo: modelo,
+                        numero_serie: numero_serie
+                    }
+                ]);
+
+            if (error) {
+                alert("Erro ao cadastrar equipamento: " + error.message);
+                return;
+            }
+
+            alert("Equipamento cadastrado com sucesso!");
+            form.reset();
+        });
+    </script>
 
 </body>
 </html>
